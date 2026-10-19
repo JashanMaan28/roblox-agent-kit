@@ -11,7 +11,8 @@
       "ServerPackages": { "$path": { "optional": "ServerPackages" } }
     },
     "ServerStorage": {
-      "Tests": { "$path": "tests" }
+      "Tests": { "$path": "tests" },
+      "WorldBuilders": { "$path": { "optional": "world" } }
     },
     "StarterPlayer": {
       "StarterPlayerScripts": {

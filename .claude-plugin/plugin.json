@@ -1,7 +1,7 @@
 {
   "name": "roblox-agent-kit",
   "displayName": "Roblox Agent Kit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "One install that gives Claude Code the whole Roblox toolchain: Roblox Studio's built-in MCP server, an Open Cloud + docs MCP server, Luau lint/type-check hooks, Rojo/Wally/luau-lsp/selene/StyLua/Lune project scaffolding, and playbook skills.",
   "author": {
     "name": "jmaan"

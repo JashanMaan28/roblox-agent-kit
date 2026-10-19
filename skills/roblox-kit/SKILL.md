@@ -65,6 +65,8 @@ Examples, the verification ladder and a common-failures table: [references/worki
 | `studio-mcp` | Driving Studio: DataModel inspection, `execute_luau`, `multi_edit`, playtests, generation, Studio connection problems |
 | `open-cloud` | Docs lookup, API keys, Luau Execution, cloud tests, place upload/publish, DataStore reads, CI, OAuth/webhooks/secrets |
 | `roblox-get-started` | First-time setup: installing Studio, enabling the MCP server, connecting Claude Code |
+| `build-game` | Making a whole game from a pitch, or continuing a game build in progress (`design/features.json` exists) |
+| `game-spec` | Turning a game idea into a design: interview, `design/GAME_SPEC.md`, the `features.json` build plan; revising a spec |
 | `new-project` | Scaffolding a new Rojo project (or starting to move a place to files) |
 | `check` | Lint, type-check, format and build before calling work done |
 | `roblox-tooling` | Rojo project files, Wally, Rokit, luau-lsp, selene, StyLua, Lune, Script Sync, `rojo syncback` |

@@ -32,7 +32,9 @@ const target = path.resolve(dirArg);
 const name = slug(opt("name") ?? path.basename(target));
 const scope = slug(opt("scope") ?? os.userInfo().username);
 
-if (fs.existsSync(target) && fs.readdirSync(target).length > 0) {
+// A design/ folder (game-spec output) and an existing .git may already be there; nothing else.
+const ALLOWED_EXISTING = new Set(["design", ".git"]);
+if (fs.existsSync(target) && fs.readdirSync(target).some((e) => !ALLOWED_EXISTING.has(e))) {
   console.error(`rbx-new: ${target} is not empty; refusing to overwrite.`);
   process.exit(1);
 }
@@ -55,6 +57,8 @@ fs.mkdirSync(path.join(target, "tools", "lib"), { recursive: true });
 fs.copyFileSync(path.join(here, "opencloud.mjs"), path.join(target, "tools", "rbx-cloud.mjs"));
 fs.copyFileSync(path.join(here, "rbx-check.mjs"), path.join(target, "tools", "rbx-check.mjs"));
 fs.copyFileSync(path.join(here, "lib", "toolchain.mjs"), path.join(target, "tools", "lib", "toolchain.mjs"));
+fs.copyFileSync(path.join(here, "game-plan.mjs"), path.join(target, "tools", "game-plan.mjs"));
+fs.copyFileSync(path.join(here, "lib", "features.mjs"), path.join(target, "tools", "lib", "features.mjs"));
 console.log(`Created ${name} at ${target}`);
 
 const steps = [];

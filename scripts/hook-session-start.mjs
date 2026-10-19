@@ -2,6 +2,7 @@
 // which parts of the kit are usable right now. Prints nothing elsewhere.
 import fs from "node:fs";
 import path from "node:path";
+import { FEATURES_REL, loadPlan, summarize, validatePlan } from "./lib/features.mjs";
 import { findProjectRoot, hasTool } from "./lib/toolchain.mjs";
 import { studioMcpCommand } from "./studio-mcp.mjs";
 
@@ -24,9 +25,28 @@ function main() {
     `- Studio MCP: ${studio ? "launcher found; tools work only while Studio is open with 'Enable Studio as MCP server' on" : "Roblox Studio MCP launcher not found on this machine"}`,
     `- Open Cloud: ${hasKey ? "API key configured" : "no API key (cloud tools disabled; docs tools still work)"}; ${kitConfig ? "roblox-kit.json present" : "no roblox-kit.json (universe/place IDs come from plugin config)"}`,
   ];
+  const build = gameBuildStatus(root);
+  if (build) lines.push(build);
   process.stdout.write(
     JSON.stringify({ hookSpecificOutput: { hookEventName: "SessionStart", additionalContext: lines.join("\n") } }),
   );
+}
+
+// One line about an in-progress build-game run, so a new session knows to resume it.
+function gameBuildStatus(root) {
+  const file = path.join(root, FEATURES_REL);
+  if (!fs.existsSync(file)) return null;
+  try {
+    const plan = loadPlan(file);
+    const { errors } = validatePlan(plan);
+    if (errors.length) return `- Game build: design/features.json has ${errors.length} validation error(s); run \`node tools/game-plan.mjs validate\` and fix them before building.`;
+    const s = summarize(plan);
+    if (s.total > 0 && s.done === s.total) return `- Game build: all ${s.total} features in design/features.json are done.`;
+    const next = s.next ? `next ${s.next.id} "${s.next.title}"` : "no feature ready (see blocked)";
+    return `- Game build in progress: ${s.done}/${s.total} features done, ${next}${s.blocked.length ? `, ${s.blocked.length} blocked` : ""}. To continue, load roblox-agent-kit:build-game and follow its session-start routine.`;
+  } catch {
+    return "- Game build: design/features.json exists but could not be read (run game-plan validate).";
+  }
 }
 
 try {

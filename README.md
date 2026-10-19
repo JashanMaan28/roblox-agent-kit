@@ -7,9 +7,9 @@ One Claude Code plugin that gives the agent the whole Roblox toolchain:
 | `roblox-studio` MCP | Roblox Studio's **official built-in MCP server** (28 tools: script read/edit/grep, `execute_luau`, DataModel search/inspect, playtest start/stop, console output, screenshots, keyboard/mouse/character input, mesh/material/texture/procedural-model generation, Creator Store search/insert, Studio's own subagents and skills). A cross-platform launcher finds it on Windows and macOS. |
 | `roblox-cloud` MCP | **Creator Docs** search + Markdown fetch (no setup), **Open Cloud Luau Execution** (headless server-side Luau), **cloud test runs**, **place upload/publish**, **read-only DataStore** inspection. Zero dependencies. |
 | Hooks | After every `.luau` write/edit: **selene + luau-lsp strict type check** (Roblox definitions + Rojo sourcemap), with errors fed straight back to Claude. On session start: a status report (toolchain, Studio MCP, cloud config). |
-| Skills | 39 skills (see below): the kit's own workflow skills plus the best community skill for each Roblox topic, fact-checked against the Creator Docs and fixed |
+| Skills | 41 skills (see below): the kit's own workflow skills, including a pitch-to-game pipeline, plus the best community skill for each Roblox topic, fact-checked against the Creator Docs and fixed |
 | Agent | `roblox-reviewer`: read-only reviewer for Luau changes (security, networking, data, performance, style) |
-| Scripts | `rbx-new` (scaffold), `rbx-check` (StyLua, selene, luau-lsp, Rojo build), `opencloud` (CLI for CI), `refimage` (reference art via Codex CLI or image APIs, fitted to Roblox sizes) |
+| Scripts | `rbx-new` (scaffold), `rbx-check` (StyLua, selene, luau-lsp, Rojo build), `opencloud` (CLI for CI), `refimage` (reference art via Codex CLI or image APIs, fitted to Roblox sizes), `game-plan` (validates and tracks a game's feature plan; refuses "done" without evidence and requirement edits without a spec revision) |
 | Project template | Rojo layout, Rokit-pinned rojo 7.7.1 / wally 0.3.2 / luau-lsp 1.70.1 / selene 0.32.0 / StyLua 2.6.0 / lune 0.11.0, strict `.luaurc`, dependency-free test runner, `AGENTS.md` (imported by `CLAUDE.md`), `roblox-kit.json`, VS Code settings, GitHub Actions CI |
 
 ## Skills
@@ -19,6 +19,7 @@ Claude loads these on demand; `roblox-kit` is the entry point and has the full i
 | Area | Skills |
 |---|---|
 | Kit workflow | `roblox-kit`, `roblox-get-started`, `studio-mcp`, `open-cloud`, `new-project`, `new-system`, `check`, `roblox-review`, `roblox-testing`, `roblox-tooling` |
+| Whole-game pipeline | `game-spec` (pitch → interview → game design + build plan, with recipes for obby, tycoon, simulator, tower defense, RPG, battlegrounds, horror, roleplay, round-based), `build-game` (builds the plan feature by feature: implement, check, test, Studio playtest, commit; resumes across sessions) |
 | Luau | `roblox-luau-core`, `roblox-luau-types`, `roblox-luau-patterns`, `roblox-architecture`, `ecs-design`, `roblox-ts` |
 | Server & data | `roblox-networking`, `roblox-security`, `roblox-data`, `roblox-server-data`, `roblox-performance` |
 | Gameplay & presentation | `roblox-gui`, `roblox-input`, `roblox-camera`, `roblox-physics`, `roblox-npc-ai`, `roblox-characters`, `roblox-animation-vfx`, `roblox-building`, `roblox-lighting`, `roblox-audio`, `roblox-localization`, `roblox-reference-art` |
@@ -43,7 +44,8 @@ In Studio: **Assistant → ⋯ → Manage MCP Servers → Enable Studio as MCP s
 
 ## Use
 
-- New game: `/roblox-agent-kit:new-project my-game`
+- Whole game from an idea: `/roblox-agent-kit:build-game "tycoon where you run a candy factory on a floating island"` (add `--auto` to skip the interview, `--mvp` for a smaller first build). It writes `design/GAME_SPEC.md` and `design/features.json`, asks you to approve them, then builds, tests and playtests every feature in Studio, committing as it goes. Run it again in a later session to continue. `/roblox-agent-kit:game-spec` alone produces just the design.
+- New empty project: `/roblox-agent-kit:new-project my-game`
 - Existing Rojo project: open Claude Code in it; the session-start hook detects it.
 - Check everything: `/roblox-agent-kit:check --fix`
 - Example asks: "add a coin pickup system with server-side validation, then playtest it and show me a screenshot", "why does player 12345's save have no inventory? (read the PlayerData DataStore)", "run the tests in the cloud".
@@ -93,6 +95,7 @@ Tested on Windows 11 with Studio's MCP server, Rokit 1.2, and Node 24:
 Not yet tested:
 - The Open Cloud tools (Luau Execution, upload, DataStores) against a real API key. They follow the documented endpoints and fail with clear errors.
 - The macOS Studio path and CI workflow.
+- A full `build-game` run against a live Studio session. The `game-plan` script, the scaffold changes and the session-start build status were tested on their own.
 
 ## Third-party content
 

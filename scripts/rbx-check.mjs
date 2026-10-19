@@ -28,7 +28,7 @@ if (!root) {
   console.error("rbx-check: no Roblox project found (looked for default.project.json, rokit.toml, selene.toml, ...).");
   process.exit(1);
 }
-const targets = paths.length ? paths.map((p) => path.relative(root, path.resolve(p))) : ["src", "tests"].filter((d) => fs.existsSync(path.join(root, d)));
+const targets = paths.length ? paths.map((p) => path.relative(root, path.resolve(p))) : ["src", "tests", "world"].filter((d) => fs.existsSync(path.join(root, d)));
 if (targets.length === 0) targets.push(".");
 
 const report = { root, targets, skipped: [] };
