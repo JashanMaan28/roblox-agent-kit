@@ -9,7 +9,7 @@ One Claude Code plugin that gives the agent the whole Roblox toolchain:
 | Hooks | After every `.luau` write/edit: **selene + luau-lsp strict type check** (Roblox definitions + Rojo sourcemap), with errors fed straight back to Claude. On session start: a status report (toolchain, Studio MCP, cloud config). |
 | Skills | 41 skills (see below): the kit's own workflow skills, including a pitch-to-game pipeline, plus the best community skill for each Roblox topic, fact-checked against the Creator Docs and fixed |
 | Agent | `roblox-reviewer`: read-only reviewer for Luau changes (security, networking, data, performance, style) |
-| Scripts | `rbx-new` (scaffold), `rbx-check` (StyLua, selene, luau-lsp, Rojo build), `opencloud` (CLI for CI), `refimage` (reference art via Codex CLI or image APIs, fitted to Roblox sizes), `game-plan` (validates and tracks a game's feature plan; refuses "done" without evidence and requirement edits without a spec revision) |
+| Scripts | `rbx-new` (scaffold), `rbx-check` (StyLua, selene, luau-lsp, Rojo build), `opencloud` (CLI for CI), `refimage` (reference art via Codex CLI or image APIs, fitted to Roblox sizes), `game-plan` (validates and tracks a game's feature plan; refuses "done" without evidence, visual checks without a passing judge verdict, and requirement edits without a spec revision) |
 | Project template | Rojo layout, Rokit-pinned rojo 7.7.1 / wally 0.3.2 / luau-lsp 1.70.1 / selene 0.32.0 / StyLua 2.6.0 / lune 0.11.0, strict `.luaurc`, dependency-free test runner, `AGENTS.md` (imported by `CLAUDE.md`), `roblox-kit.json`, VS Code settings, GitHub Actions CI |
 
 ## Skills
@@ -19,7 +19,7 @@ Claude loads these on demand; `roblox-kit` is the entry point and has the full i
 | Area | Skills |
 |---|---|
 | Kit workflow | `roblox-kit`, `roblox-get-started`, `studio-mcp`, `open-cloud`, `new-project`, `new-system`, `check`, `roblox-review`, `roblox-testing`, `roblox-tooling` |
-| Whole-game pipeline | `game-spec` (pitch → interview → game design + build plan, with recipes for obby, tycoon, simulator, tower defense, RPG, battlegrounds, horror, roleplay, round-based), `build-game` (builds the plan feature by feature: implement, check, test, Studio playtest, commit; resumes across sessions) |
+| Whole-game pipeline | `game-spec` (pitch → interview → game design + build plan, with recipes for obby, tycoon, simulator, tower defense, RPG, battlegrounds, horror, roleplay, round-based), `build-game` (generates reference art for the look, then builds the plan feature by feature: implement, check, test, Studio playtest, an independent judge scoring screenshots against the references, commit; resumes across sessions) |
 | Luau | `roblox-luau-core`, `roblox-luau-types`, `roblox-luau-patterns`, `roblox-architecture`, `ecs-design`, `roblox-ts` |
 | Server & data | `roblox-networking`, `roblox-security`, `roblox-data`, `roblox-server-data`, `roblox-performance` |
 | Gameplay & presentation | `roblox-gui`, `roblox-input`, `roblox-camera`, `roblox-physics`, `roblox-npc-ai`, `roblox-characters`, `roblox-animation-vfx`, `roblox-building`, `roblox-lighting`, `roblox-audio`, `roblox-localization`, `roblox-reference-art` |

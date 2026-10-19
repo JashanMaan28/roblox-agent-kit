@@ -79,8 +79,9 @@ Follow [features-schema.md](references/features-schema.md):
 1. Start with the standard CORE features (M0), adapted to this spec.
 2. Add the recipe's feature skeleton, rewritten for this game: real names, the spec's numbers in the acceptance criteria, Given/When/Then form, the right `verify` kinds, `skills` and `spec_refs`. The recipe's "Milestones" line (or its per-milestone tables) sets each feature's `milestone`; a `depends` of `M0` or `-` means the CORE features the feature actually needs (usually CORE-02 bootstrap, CORE-03 remotes, CORE-04 data, CORE-05 QA). Recipe features that duplicate standard ones (analytics wrapper, "launch readiness", publish checklist, performance pass) merge into CORE-10 and the LAUNCH features instead of being copied; keep their genre-specific checks as extra criteria there.
 3. Add features for the pitch's unique mechanic and anything the interview added. Remove recipe features the answers ruled out (log it in `DECISIONS.md`).
-4. End with the LAUNCH features (or the MVP subset).
-5. Top level `spec_revision: 1`; every feature `status: "todo"`, `evidence: []`, `blocked_reason: null`.
+4. Give every look-changing feature (zones, lighting, detail passes, HUD and screens, signature moments) a `visual` criterion that names its §7 reference shot ([features-schema.md §3](references/features-schema.md#3-writing-acceptance-criteria)).
+5. End with the LAUNCH features (or the MVP subset).
+6. Top level `spec_revision: 1`; every feature `status: "todo"`, `evidence: []`, `blocked_reason: null`.
 
 ### 6. Validate and self-review
 
@@ -93,8 +94,8 @@ node "${CLAUDE_PLUGIN_ROOT}/scripts/game-plan.mjs" status
 
 ### 7. Approval and handoff
 
-- **Interactive:** show the approval summary from [interview.md](references/interview.md#approval-interactive-mode) and ask once. Apply changes until approved; log the approval.
-- **Auto mode:** log "approved by auto mode" and continue.
+- **Interactive:** show the approval summary from [interview.md](references/interview.md#approval-interactive-mode), with the generated mood board when images are approved, and ask once. Apply changes until approved; log the approval.
+- **Auto mode:** generate the mood board the same way (when images are allowed), log "approved by auto mode" and continue.
 - If `build-game` called this skill, return to it. Otherwise tell the user: the spec is ready, `/roblox-agent-kit:build-game` builds it, and the three files can be edited by hand first (re-run `game-plan.mjs validate` after editing).
 
 If the project is already a git repository, commit the `design/` folder: `Add game spec (revision 1)`.

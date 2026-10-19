@@ -23,7 +23,8 @@ One feature at a time, from `todo` to `done` with evidence, then a commit. The l
 5. Implement: pure Logic + spec first, then server, client, UI/world, QA entries
 6. Static: fix everything the edit hook reports; node tools/rbx-check.mjs --fix, then without --fix
 7. Unit/engine: run the TestRunner; count must rise by the new specs, 0 failed
-8. Playtest: the recipe for each playtest criterion (§3); clean up probes; stop play
+8. Playtest: the recipe for each playtest criterion (§3); visual criteria go to the judge (visual-review.md);
+   clean up probes; stop play
 9. Regression: re-run the full TestRunner; for M1+ also one quick pass of the core loop smoke test
 10. node <plan> done <ID> --evidence "<AC>=<result>" … (one per criterion)
 11. node <plan> guard ; git add -A ; git commit
@@ -38,8 +39,8 @@ One feature at a time, from `todo` to `done` with evidence, then a commit. The l
 |---|---|
 | `system` | `new-system` vertical slice: Types → `<Name>Logic` (pure, `Config`) + spec → remotes → server system (handler ladder, snapshot on join) → controller → QA commands → bootstrap registration |
 | `data` | Change the template and add a migration step + fixture spec in the same feature; never change a field's meaning in place |
-| `ui` | Theme tokens and shared components only; one screen module per screen; opened through the router; touch/gamepad/keyboard paths; text from a strings table if localization is in scope |
-| `world` | Builder script per zone (`world-building.md`); geometry respects the spec's scale and movement limits; tags/attributes for anything a system reads |
+| `ui` | Build against the mockup in `art/refs/`; theme tokens and shared components only; one screen module per screen; opened through the router; touch/gamepad/keyboard paths; text from a strings table if localization is in scope |
+| `world` | Open the zone's reference image first; builder script per zone (`world-building.md`); geometry respects the spec's scale and movement limits; tags/attributes for anything a system reads |
 | `content` | Data tables (stages, enemies, items) in `*Logic.Config` or `src/shared/Content/<Name>.luau`, validated by a spec (unique ids, monotonic curves, every reference resolves) |
 | `juice` | Client-side only: tweens, particles, camera shake, sounds, number pop-ups, triggered by server snapshots or remote events; never gates gameplay. `roblox-animation-vfx`, `roblox-audio` |
 | `monetization` | `Products.luau` names, `MarketplaceService` prompts from the client, `ProcessReceipt` on the server: idempotent (purchase id recorded in the profile before granting), grants through system APIs, returns `PurchaseGranted` only after the profile holds the grant |
@@ -78,7 +79,7 @@ Without Studio: `cloud_run_tests` (needs the API key and `testPlaceId`). Zero te
 
 **Multiplayer behaviour.** Studio MCP drives one client. Prove multi-player rules with engine tests on the pure logic (N players as data) and QA commands that simulate the other players' actions through the same system APIs (e.g. `QA:Invoke("simulateJoin", fakeUserId)` where the system supports a test stand-in). Note in PROGRESS.md which features should also get a real 2-player Studio test by the user (Test → Clients and Servers).
 
-**Visual criteria.** `screen_capture` with an explicit camera position/target from the spec's hero angles; describe what the image shows against the criterion (zone present, colours match the palette, UI fits). A black capture means the Studio window is minimised: ask the user to restore it.
+**Visual criteria.** Never self-graded: set up the shot and hand it to a judge subagent with the brief in [visual-review.md](visual-review.md); fix and re-judge up to 3 rounds. The judge's first line is the evidence string. For your own checks while building, `screen_capture` from the hero camera in `art/refs/README.md` as often as useful. A black capture means the Studio window is minimised: ask the user to restore it.
 
 ## 4. Evidence strings
 
@@ -88,6 +89,7 @@ One `--evidence` per criterion, specific enough that someone else could repeat i
 OBY-03-AC1=TestRunner 71 passed 0 failed incl. StageLogic.spec 'advance only to next stage' (4 cases)
 OBY-03-AC2=playtest: QA setStat Stage=1; walked to Checkpoint2; Server Stage=2, leaderstats=2; reset → respawn 0.9 s at 3.1 studs from pad; no console errors
 CORE-08-AC2=screenshots phone 390x844 and desktop 1920x1080: HUD inside safe area, coins counter top-left, 0 overlaps
+CORE-08-AC3=visual ref=art/refs/ui-hud-phone.png judge=sonnet hierarchy=4 legibility=5 layout=4 palette=5 polish=4 round=1
 ```
 
 ## 5. When verification fails
@@ -113,6 +115,9 @@ CORE-08-AC2=screenshots phone 390x844 and desktop 1920x1080: HUD inside safe are
 ```markdown
 # Progress
 Now: M2 · last done SIM-07 · next SIM-08 · blocked: SIM-15 (needs product ids)
+
+## Visual debt
+- CORE-08 HUD (ref ui-hud-phone): polish=3 — button strokes inconsistent, coin icon off-style
 
 ## Log
 - 2026-10-19 SIM-07 Pet equip slots — done; 3 slots, equip/unequip remote validated; tests 88/0

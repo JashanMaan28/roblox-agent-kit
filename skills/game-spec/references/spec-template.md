@@ -66,7 +66,8 @@ Defaults, caps, migration notes, what is session-only, data-store names (Profile
 ## §7 World and art direction
 - Zones: name, purpose, size in studs, connections, landmarks, spawn points. Tags (`CollectionService`) used by systems.
 - Scale: an R15 character is ~5 studs tall; doors ≥ 8 high × 5 wide; corridors ≥ 8 wide. Movement limits from the defaults (WalkSpeed 16, JumpHeight 7.2 → ~0.54 s airtime, ~8.7 studs of horizontal travel): required jumps stay ≤ 6 studs up and ≤ 7 studs across edge to edge unless the spec changes movement stats.
-- Art direction: style, palette (5–7 hex colours with roles), materials, lighting technology, Atmosphere/ColorCorrection/Bloom values, time of day, skybox mood. Reference images in `art/refs/` if generated.
+- Art direction: style, palette (5–7 hex colours with roles), materials, lighting technology, Atmosphere/ColorCorrection/Bloom values, time of day, skybox mood.
+- Reference shots (generated in CORE-00 into `art/refs/`, judged against by every visual criterion): a table of `id` · shot (subject, camera, what must read) · preset · used by. Typically `mood`, one `zone-<name>` per zone, `ui-hud-phone`, one main screen, hero props, one signature moment; within the §14 image budget.
 - Asset sources: built from parts / Studio generation / Creator Store (approved per §14).
 
 ## §8 UI and input
@@ -94,7 +95,7 @@ Max players, max NPCs/projectiles/parts at once, StreamingEnabled on/off and why
 
 ## §14 Decisions, assumptions and approvals
 - Interview answers and auto-mode defaults (pointer to `DECISIONS.md` for the full log).
-- Approved high-impact choices: data schema (§5), product list and prices (§10), paid random items yes/no, content maturity expectation, Studio asset generation allowed (quota), Creator Store assets allowed.
+- Approved high-impact choices: data schema (§5), product list and prices (§10), paid random items yes/no, content maturity expectation, Studio asset generation allowed (quota), Creator Store assets allowed, reference-image budget (count) and provider.
 - Out of scope for this revision.
 ````
 
@@ -107,4 +108,5 @@ Max players, max NPCs/projectiles/parts at once, StreamingEnabled on/off and why
 - [ ] Every HUD element and screen in §8 is fed by a system; every action has keyboard, gamepad and touch.
 - [ ] FTUE (§9) reaches the first reward within the §1 target using only M1 features.
 - [ ] Numbers agree across sections (prices, rewards, caps, timers).
+- [ ] Every look-changing feature has a visual criterion naming a §7 reference shot, and every §7 shot is used by at least one feature.
 - [ ] No placeholders ("TBD", "etc.", "some") remain.

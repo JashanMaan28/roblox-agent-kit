@@ -115,7 +115,7 @@ Only when spec §14 approved them.
 3. Move it to `ServerStorage.WorldAssets.<Name>` with a stable name; builders place it with `Lib.clone("<Name>", parent, cframe)`.
 4. Record it in `world/assets.md`: name, source (generation prompt + settings, or Creator Store asset id and creator), license note for store assets, where it's used.
 
-Images (decals, UI icons): `roblox-reference-art` to create, `store_image`/`upload_image` to get an asset id, ids kept in a `src/shared/Assets.luau` table with names. Sounds: Creator Store audio ids in `Sounds.luau`.
+Reference images for the look (concepts, mockups, turnarounds) come from CORE-00 ([art-direction.md](art-direction.md)); a `prop`/`turnaround` reference can feed Studio generation directly (`store_image` → `generate_procedural_model` `attachedImageUri`). Images that ship in the game (decals, UI icons): `roblox-reference-art` to create, `store_image`/`upload_image` to get an asset id, ids kept in a `src/shared/Assets.luau` table with names. Sounds: Creator Store audio ids in `Sounds.luau`.
 
 ## 8. Lighting and atmosphere
 
@@ -128,4 +128,4 @@ Images (decals, UI icons): `roblox-reference-art` to create, `store_image`/`uplo
 - Builder determinism: build twice, compare `Lib.count` and a checksum of part CFrames/sizes (returned by `build`); they must match.
 - Layout: `execute_luau` (Edit) asserting tagged objects exist with the spec's counts (30 `Checkpoint` tags, 8 `Plot` tags…).
 - Reachability: playtest with `character_navigation` along the critical path (spawn → first objective → next zone); a stuck character is a level bug.
-- Look: `screen_capture` from the spec's hero angles (spawn view, each zone overview, a ground-level shot); compare against the art direction and `art/refs/` images.
+- Look: build each zone while looking at its reference; record its hero camera in `art/refs/README.md`; the visual criteria are judged from those cameras by an independent judge ([visual-review.md](visual-review.md)).

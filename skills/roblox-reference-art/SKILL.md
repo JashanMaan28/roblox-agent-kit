@@ -57,11 +57,11 @@ Fitting is a center crop plus resize, done in-process (PNG only). If a provider 
 5. **Look at the result** (Read the PNG) before using or reporting it. If it misses, refine the prompt once and say what changed; don't loop without asking.
 6. **Report:** the path, the provider, and one line on what the image shows.
 
-Each generation spends the user's money or plan quota. Ask before making more than about 5 images in one task, and prefer refining the prompt over generating more variants.
+Each generation spends the user's money or plan quota. Ask before making more than about 5 images in one task, and prefer refining the prompt over generating more variants. Exception: inside `build-game`, the image budget approved in the spec (§14) is the permission; stay within it without asking again.
 
 ## Using the references
 
-- **UI:** generate a `ui-mockup` (or `ui-mobile`), confirm it with the user, then build it in code against the image: layout, hierarchy, colors (sample the hex values you see), corner radii, spacing. Follow `roblox-gui` for the real implementation (scale-based sizing, safe insets, touch targets). Compare with a Studio `screen_capture` at the end.
+- **UI:** generate a `ui-mockup` (or `ui-mobile`), confirm it with the user (inside `build-game` the approved spec stands in for that), then build it in code against the image: layout, hierarchy, colors (sample the hex values you see), corner radii, spacing. Follow `roblox-gui` for the real implementation (scale-based sizing, safe insets, touch targets). Compare with a Studio `screen_capture` at the end.
 - **Props and characters:** a `turnaround` or `prop` image is a modeling target for Blender or for describing the asset to Studio's generators. To pass it into Studio, `store_image` (absolute local path, ≤ 5 MB) returns an `IMAGEID_` URI that `generate_procedural_model` accepts as `attachedImageUri`; read the tool schema before passing it to other generators. Studio generation also costs quota: ask first (see `studio-mcp`).
 - **Levels:** use `level-layout` or `environment` as the plan, then build with `roblox-building`. Keep the image beside the build and check landmarks and paths against it.
 - **Textures and decals:** `texture` output is a starting point. Check that the tile repeats without visible seams before using it as a SurfaceAppearance or MaterialVariant colour map. Uploading images to Roblox is manual (Asset Manager) or needs an Open Cloud key with asset scopes, which this kit doesn't request.

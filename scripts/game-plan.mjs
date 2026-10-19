@@ -17,6 +17,7 @@ import {
   guardPlan,
   loadPlan,
   nextFeature,
+  parseVisualEvidence,
   savePlan,
   summarize,
   validatePlan,
@@ -141,7 +142,18 @@ switch (command) {
     for (const entry of entries) {
       const eq = entry.indexOf("=");
       if (eq <= 0 || !entry.slice(eq + 1).trim()) fail(`bad --evidence "${entry}" (expected <AC-ID>=<result>)`);
-      f.evidence.push({ ac: entry.slice(0, eq).trim(), result: entry.slice(eq + 1).trim(), at });
+      const ac = entry.slice(0, eq).trim();
+      const result = entry.slice(eq + 1).trim();
+      const criterion = f.acceptance?.find((a) => a.id === ac);
+      if (criterion?.verify?.includes("visual")) {
+        const visual = parseVisualEvidence(result);
+        if (!visual.ok) fail(`${ac} is a visual check: ${visual.reason}`);
+        const projectDir = path.dirname(path.dirname(file));
+        if (visual.ref !== "none" && !fs.existsSync(path.resolve(projectDir, visual.ref))) {
+          fail(`${ac}: reference image ${visual.ref} not found (paths are relative to the project root)`);
+        }
+      }
+      f.evidence.push({ ac, result, at });
     }
     f.status = "done";
     f.blocked_reason = null;

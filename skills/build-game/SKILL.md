@@ -33,7 +33,7 @@ Everything else (bugs, failing tests, design gaps inside the spec's intent) you 
 2. Find or choose the project directory: `--dir`, the current Rojo project, or a new folder named after the game.
 3. Studio: `list_roblox_studios` (retry for ~30 s), pick the Studio with the target place, `get_studio_state`. The build needs a connected Studio for playtests: if none is connected, ask the user once to open Studio with a baseplate (or their place) and enable *Studio as MCP server*; `studio-mcp` and `roblox-get-started` cover fixes.
 4. Rojo: after scaffolding, run `rojo serve` in the background (Bash `run_in_background`) from the project root and ask the user once to click **Connect** in Studio's Rojo plugin; confirm by checking `ServerScriptService.Server` exists via `inspect_instance`.
-5. Optional capabilities, noted in PROGRESS.md: cloud tests (`cloud_config_status`), reference art (`refimage.mjs detect`).
+5. Capabilities, noted in PROGRESS.md: cloud tests (`cloud_config_status`), image generation for reference art (`node "${CLAUDE_PLUGIN_ROOT}/scripts/refimage.mjs" detect`).
 
 ## Phase 1: Spec
 
@@ -53,7 +53,8 @@ next → start → read spec refs + skills + existing code → implement (Logic+
 → rbx-check → TestRunner → playtest each criterion → regression → done --evidence → guard → commit → PROGRESS.md
 ```
 
-- M0 features: [references/foundation.md](references/foundation.md). World, terrain, lighting and assets: [references/world-building.md](references/world-building.md).
+- M0 features: [references/foundation.md](references/foundation.md). CORE-00 creates the style profile and reference images everything is built toward: [references/art-direction.md](references/art-direction.md). World, terrain, lighting and assets: [references/world-building.md](references/world-building.md).
+- Every `visual` criterion goes to an independent judge subagent that captures the shot and scores it against the reference: [references/visual-review.md](references/visual-review.md).
 - Genre systems: the recipe named in the spec header (`${CLAUDE_PLUGIN_ROOT}/skills/game-spec/references/genres/<genre>.md`) has the tricky-part notes, QA commands and playtest scripts for this genre; read the relevant section before each genre feature.
 - After the last feature of each milestone: the milestone gate in [references/milestones-and-release.md](references/milestones-and-release.md).
 - Use the task list for the current feature's steps; `features.json` stays the source of truth.
@@ -76,6 +77,7 @@ M4 ends with the LAUNCH features: reviewer pass, performance budget, store art, 
 - **Done means evidence.** A feature is `done` only through `<plan> done` with one evidence string per acceptance criterion, observed after the final code change. Never write status or evidence into `features.json` by hand.
 - **Requirements are frozen.** Never edit criteria, delete tests or loosen assertions to get green. A wrong spec gets a revision (`game-spec` features-schema §6) with the reason; `<plan> guard` runs before every commit.
 - **One feature in progress.** Finish, or `block` with a reason, before starting another.
+- **Aim at the references.** Look-changing work starts from its reference image in `art/refs/` and isn't done until the judge passes it; the builder never grades its own screenshots.
 - **Verify like a player.** QA commands set up the `given`; the `when` is done through character, keyboard, mouse and UI input. Assert on server state, client state and console, plus screenshots for visuals.
 - **Kit rules apply everywhere:** server authority and validated remotes, `--!strict`, ProfileStore Mock in Studio, `task` library, cleanup, reuse before adding (`roblox-kit`).
 - **Clean every experiment.** Stop playtests, remove probes and temporary parts, keep `Workspace.World` owned by the builders.

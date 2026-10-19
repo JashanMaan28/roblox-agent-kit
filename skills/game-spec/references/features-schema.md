@@ -92,12 +92,14 @@ Each criterion is a Given/When/Then that a single command or playtest can check,
 | `engine` | Spec or `execute_luau` probe that needs a live server (instances, services, ProfileStore Mock) | returned values from the probe |
 | `playtest` | Studio MCP: drive the character/UI, then assert server and client state | returned state + console lines + screenshot description |
 | `review` | `roblox-reviewer` (or the stated checklist) finds no Critical/High issue | reviewer summary line |
+| `visual` | A separate judge captures the shot in Studio and scores it against a reference image with a fixed rubric (build-game `visual-review.md`) | `visual ref=art/refs/zone-spawn.png judge=sonnet palette=5 lighting=4 …` |
 
 Rules:
 - **Observable `then`.** Name the exact state, value, instance, attribute, UI text or timing that proves it ("Coins == 70 and Inventory has exactly 1 Sword"). Never "works", "feels good", "is correct".
 - **Cover the abuse case** for anything a client can request: one criterion where a forged or out-of-range request changes nothing ("FireServer with amount = -5, NaN, 1e9 → balance unchanged, no error spam").
 - **Server truth over pixels.** A screenshot supports UI and world criteria; state assertions prove gameplay. Use both for player-facing flows.
 - **Numbers come from the spec.** Criteria quote the Config values from `GAME_SPEC.md` (cost 25, cooldown 1.5 s), so tuning later is a revision, not a silent edit.
+- **Visual criteria** name the reference image and the shot: "Given the Spawn zone built and lit, when captured from the `zone-spawn` hero camera, then the judge scores ≥ 4 on every World rubric line against `art/refs/zone-spawn.png`". Every feature that changes how the game looks (zones, lighting, detail passes, HUD and screens, signature moments, store art) gets one; recipe acceptance that says "screen_capture shows …" becomes a visual criterion. State and behaviour stay in non-visual criteria.
 - **Persistence criteria** run against ProfileStore's Mock store (or Studio without API access) and check load → mutate → leave → rejoin values through the data layer.
 
 ## 4. Granularity and ordering
@@ -113,14 +115,15 @@ Every plan starts with these M0 features (adapt descriptions and criteria to the
 
 | Id | Title | depends | Acceptance (summarised; write full Given/When/Then) | verify |
 |---|---|---|---|---|
+| CORE-00 | Art direction and reference images | – | `.imagegen/style.json` palette equals spec §7; every shot in spec §7's reference list exists in `art/refs/` with a manifest entry (or a written target when images are off), within the approved budget | review |
 | CORE-01 | Project builds, lints and runs tests | – | `rbx-check` passes; TestRunner finds ≥1 spec and reports 0 failed | static, unit |
 | CORE-02 | Bootstrap starts every system in order | CORE-01 | Playtest console shows `[server] ready (<n> systems)` and `[client] ready (<n> controllers)`, no errors or warnings from game code | playtest |
 | CORE-03 | Remotes, validation and rate limiting | CORE-02 | Remote folder exists from Rojo files; validator specs reject NaN, ±inf, fractions, out-of-range, wrong types, oversize strings; token bucket rejects the (N+1)th call within its window | unit, engine |
 | CORE-04 | Player data loads, saves and migrates | CORE-02 | New player gets the versioned template; a v0 fixture migrates to the current version (spec); leave → rejoin restores mutated values via the Mock store; a failed load kicks with a message instead of using defaults | unit, engine |
 | CORE-05 | QA commands for every state | CORE-04 | `ServerStorage.QA:Invoke("help")` lists commands; grant/reset/set commands change state through system APIs; a non-Studio, non-allowlisted caller is refused | engine |
-| CORE-06 | World blockout matches the spec layout | CORE-02 | Every zone in spec §7 exists under `Workspace.World.<Zone>` built from the repo (see build-game world-building); spawn places the player in the start zone; overview screenshot | playtest |
-| CORE-07 | Lighting and atmosphere match the art direction | CORE-06 | Lighting/Atmosphere/post-processing values equal spec §7; screenshot from the hero camera angle | playtest |
-| CORE-08 | UI shell, theme and HUD frame | CORE-02 | Theme tokens (colours, fonts, corner radius) in one module; HUD shows placeholders for spec §8 elements; fits safe area on a phone-sized and a desktop viewport (screenshots); toast notification helper works | playtest |
+| CORE-06 | World blockout matches the spec layout | CORE-00, CORE-02 | Every zone in spec §7 exists under `Workspace.World.<Zone>` built from the repo (see build-game world-building); spawn places the player in the start zone; hero cameras recorded in the refs manifest; judge: `composition` and `readability` ≥ 4 against each zone ref | playtest, visual |
+| CORE-07 | Lighting and atmosphere match the art direction | CORE-06 | Lighting/Atmosphere/post-processing values equal spec §7; judge: World rubric ≥ 4 from each hero camera | engine, visual |
+| CORE-08 | UI shell, theme and HUD frame | CORE-00, CORE-02 | Theme tokens (colours, fonts, corner radius) in one StyleSheet; HUD shows placeholders for spec §8 elements; fits the safe area on a phone and a desktop viewport; toast helper works; judge: UI rubric ≥ 4 against the HUD mockup | playtest, visual |
 | CORE-09 | Input actions for every platform | CORE-02 | Every action in spec §8 input map has keyboard, gamepad and touch bindings; triggering each action from keyboard reaches its handler (console line) | playtest |
 | CORE-10 | Analytics events helper | CORE-04 | Onboarding funnel steps and economy events from spec §12 go through one module; calling it in Studio logs the event payloads without errors | engine |
 | CORE-11 | Audio groups and settings | CORE-08 | Music/SFX/UI SoundGroups exist; settings toggles change group volume and persist in the profile | playtest |
@@ -131,7 +134,7 @@ M4 always ends with:
 |---|---|---|---|---|
 | LAUNCH-01 | Security, data and purchase review is clean | all M1–M4 systems | `roblox-reviewer` over `src/` reports no Critical or High findings (fixes applied and re-reviewed) | review |
 | LAUNCH-02 | Performance budget holds | LAUNCH-01 | With QA-spawned worst-case load (spec §13 numbers): server heartbeat ≥ 55 Hz, client ≥ 55 FPS in Studio, no instance count or memory growth across 3 rounds/loops of the core loop | engine, playtest |
-| LAUNCH-03 | Store page assets exist | CORE-07 | Icon 512×512 and ≥3 thumbnails 1920×1080 in `art/marketing/`, matching the art direction | review |
+| LAUNCH-03 | Store page assets exist | CORE-07 | Icon 512×512 and ≥3 thumbnails 1920×1080 in `art/marketing/`; judge: Store rubric ≥ 4 for each | visual |
 | LAUNCH-04 | Fresh-player full journey | LAUNCH-01, LAUNCH-02 | With a reset profile: FTUE beats in spec §9 happen in order, the first reward arrives inside the target time, the full core loop and first meta upgrade complete with zero console errors; screenshots at each beat | playtest |
 | LAUNCH-05 | Release report is written | LAUNCH-04 | `roblox-publish-checklist` run; `design/RELEASE.md` lists READY/NOT READY per gate, the dashboard steps for the user (product creation and ids, questionnaire, publish), and how to roll back | review |
 

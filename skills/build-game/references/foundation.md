@@ -3,6 +3,7 @@
 How to implement the standard CORE features so every later feature has a home. Build them in id order; each one is verified and committed like any other feature. Where a project already has an equivalent (a data layer, a network wrapper), use it and adapt the criterion instead of adding a second one.
 
 ## Contents
+0. CORE-00 art direction
 1. Layout
 2. CORE-01 toolchain
 3. CORE-02 bootstrap
@@ -14,6 +15,10 @@ How to implement the standard CORE features so every later feature has a home. B
 9. CORE-09 input
 10. CORE-10 analytics, CORE-11 audio
 11. Products
+
+## 0. CORE-00 art direction
+
+First feature after the scaffold: style profile, reference images and manifest, per [art-direction.md](art-direction.md). Generations run in the background while CORE-01–05 (no visuals) are built; CORE-06 onward needs the references.
 
 ## 1. Layout
 
@@ -79,7 +84,7 @@ Follow [world-building.md](world-building.md). CORE-06 delivers the blockout of 
 
 ## 8. CORE-08 UI shell
 
-Load `roblox-gui`. One `ScreenGui` per layer (HUD, Screens, Overlays, Toasts) with `IgnoreGuiInset` decided once, `ResetOnSpawn = false`, safe-area aware layout (`ScreenInsets`), `UIScale` driven by viewport size, and the theme as UI Styling: one `StyleSheet` with tokens (palette hex values from spec §7, font family, text sizes, corner radius, stroke) and rules for the shared components, attached to every ScreenGui with a `StyleLink`. `Theme.luau` keeps the same tokens for code that needs them (tweens, generated colours). A small component set: button (with hover/press feedback and a click sound hook), panel, label, icon-counter, progress bar, toast. A screen router so only one modal screen is open at a time and gamepad selection moves into it. Build UI with code-driven components or Rojo `.model.json`, whichever the project uses; keep them inspectable in Explorer during play.
+Load `roblox-gui`. One `ScreenGui` per layer (HUD, Screens, Overlays, Toasts) with `IgnoreGuiInset` decided once, `ResetOnSpawn = false`, safe-area aware layout (`ScreenInsets`), `UIScale` driven by viewport size, and the theme as UI Styling, built against the HUD mockup in `art/refs/`: one `StyleSheet` with tokens (palette hex values from spec §7, font family, text sizes, corner radius, stroke) and rules for the shared components, attached to every ScreenGui with a `StyleLink`. `Theme.luau` keeps the same tokens for code that needs them (tweens, generated colours). A small component set: button (with hover/press feedback and a click sound hook), panel, label, icon-counter, progress bar, toast. A screen router so only one modal screen is open at a time and gamepad selection moves into it. Build UI with code-driven components or Rojo `.model.json`, whichever the project uses; keep them inspectable in Explorer during play.
 
 Verify with screenshots at a phone-sized viewport and a desktop viewport: switch devices with `StudioDeviceSimulatorService` from `execute_luau` (Edit or Client datamodel; Studio's `skill` tool has `rbx-device-simulator-lua` with the exact calls), then `screen_capture`.
 

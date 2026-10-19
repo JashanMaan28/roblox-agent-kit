@@ -15,8 +15,9 @@ Run when the last feature of a milestone is `done`, before starting the next mil
 1. `node tools/rbx-check.mjs` clean; full TestRunner run, 0 failed (count recorded).
 2. Rebuild the world from builders (all zones) and run the core-loop smoke test (§2) from a reset profile.
 3. Review the milestone's diff with the `roblox-reviewer` agent (`git diff milestone/<prev>..HEAD -- src world`; first milestone: the whole `src`). Fix Critical/High findings as part of the gate; re-run checks. Medium findings either get fixed now or a note in PROGRESS.md.
-4. Re-read spec §0 pillars and §1 pacing targets; check the milestone actually serves them (e.g. "first reward ≤ 20 s" measured in the smoke test). If not, fix or revise the spec.
-5. `git tag milestone/<Mn>`; PROGRESS.md entry with the gate results; remind the user to save the place in Studio.
+4. Visual re-check: a judge pass ([visual-review.md](visual-review.md)) from every hero camera in `art/refs/README.md` and on the HUD, so later features haven't eroded earlier looks. Regressions below 4 are fixed now. At the M3 gate the "Visual debt" list in PROGRESS.md must be empty.
+5. Re-read spec §0 pillars and §1 pacing targets; check the milestone actually serves them (e.g. "first reward ≤ 20 s" measured in the smoke test). If not, fix or revise the spec.
+6. `git tag milestone/<Mn>`; PROGRESS.md entry with the gate results; remind the user to save the place in Studio.
 
 ## 2. Core-loop smoke test
 
@@ -55,7 +56,7 @@ Performance (`roblox-performance`): spec §13 budgets; no per-frame `Instance.ne
 
 - Monetization (`roblox-monetization`): every product/pass from spec §10 wired by name; receipts idempotent and durable; passes checked on join and on `PromptGamePassPurchaseFinished`; paid random items with odds shown before purchase and the restricted-player path from `PolicyService:GetPolicyInfoForPlayerAsync()` (`ArePaidRandomItemsRestricted`).
 - Social and safety: all player-written text filtered (`TextService:FilterStringAsync` + `GetNonChatStringForBroadcastAsync`/`ForUserAsync`) before display; chat through `TextChatService` only; no custom free-form messaging.
-- Store assets (LAUNCH-03): `roblox-reference-art` with presets for icon (512×512) and thumbnails (1920×1080), using spec §7 art direction and in-game screenshots described as references; files in `art/marketing/`.
+- Store assets (LAUNCH-03): `roblox-reference-art` with presets for icon (512×512) and thumbnails (1920×1080), using the style profile, the mood board as `--ref`, and what the finished game's hero shots show; files in `art/marketing/`; each judged with the Store rubric.
 - Release report (LAUNCH-05): run `roblox-publish-checklist`; write `design/RELEASE.md`:
 
 ```markdown
@@ -79,7 +80,7 @@ Publishing itself stays with the user unless they explicitly ask in this convers
 
 When every feature is `done` (or `blocked` on something only the user can provide), tell the user, in this order:
 
-1. What the game is now: one paragraph + the core loop, with 3–5 screenshots described (zones, HUD, a reward moment).
+1. What the game is now: one paragraph + the core loop, with 3–5 shots described (zones, HUD, a reward moment) next to their reference images and final judge scores.
 2. Build stats: features done/total per milestone, tests passed, commits, milestone tags.
 3. Verification: what was playtested, what multi-client tests ran, reviewer result.
 4. What only they can do: the RELEASE.md "For you to do" list and every blocked feature with its reason.

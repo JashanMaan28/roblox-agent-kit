@@ -43,8 +43,11 @@ Data: Profile v1 {coins, stage, bestTime, …}  — store "PlayerData"
 Products: VIP pass 199 R$, Skip Stage 25 R$, … (you create these in the Creator Dashboard)
 Paid random items: none | yes (odds shown, restricted players get the alternative)
 Assets: Studio generation yes, Creator Store yes, images ~15
+Look: art/refs/mood.png (mood board, generated for this approval)
 Assumptions: <3–6 most important defaults>
 ```
+
+If images are approved and `refimage.mjs detect` shows a provider, generate the mood board first (`moodboard` preset, `art/refs/mood.png`, prompt from spec §0 and §7, style profile written per build-game `art-direction.md` §2) and show it with the summary so the user approves a look, not only words. It counts toward the image budget.
 
 Then one question, header "Approve": **Approve and build** · **Change something** (they type what). Changes → revise spec and features (still revision 1 before the build starts), show the summary again. Record the approval with the date in `DECISIONS.md` and §14.
 

@@ -6,12 +6,38 @@ import path from "node:path";
 
 export const FEATURES_REL = path.join("design", "features.json");
 export const STATUSES = ["todo", "in_progress", "done", "blocked"];
-export const VERIFY_KINDS = ["static", "unit", "engine", "playtest", "review"];
+export const VERIFY_KINDS = ["static", "unit", "engine", "playtest", "review", "visual"];
+// Visual evidence is a judge's verdict against a reference image, written as
+//   visual ref=art/refs/zone-lava.png judge=subagent palette=4 lighting=5 readability=4 composition=4 mood=4
+// (ref=none when no reference image exists). Every score must be >= VISUAL_FLOOR; a score
+// below VISUAL_PASS is only accepted when the entry also says "debt" (logged for the polish gate).
+export const VISUAL_PASS = 4;
+export const VISUAL_FLOOR = 3;
 export const SCOPES = ["mvp", "launch"];
 // Fields that define *what* must be built. Only a spec revision may change them.
 export const FROZEN_FIELDS = ["milestone", "title", "description", "depends_on", "acceptance"];
 
 const FEATURE_ID = /^[A-Z][A-Z0-9]*-\d{2,}$/;
+const NON_SCORE_KEYS = new Set(["ref", "judge", "round", "rounds", "camera"]);
+
+// Parses a visual evidence string. Returns { ok, ref, reason }.
+export function parseVisualEvidence(result) {
+  const text = String(result ?? "");
+  const ref = text.match(/\bref=(\S+)/)?.[1];
+  if (!ref) return { ok: false, reason: 'needs "ref=<image path>" (or ref=none)' };
+  if (!/\bjudge=\S+/.test(text)) return { ok: false, ref, reason: 'needs "judge=<who scored it>"' };
+  const scores = [...text.matchAll(/\b([a-z][a-z-]*)=(\d+(?:\.\d+)?)\b/gi)]
+    .filter((m) => !NON_SCORE_KEYS.has(m[1].toLowerCase()))
+    .map((m) => Number(m[2]));
+  if (scores.length < 3) return { ok: false, ref, reason: "needs at least 3 rubric scores (name=1..5)" };
+  if (scores.some((n) => n < 1 || n > 5)) return { ok: false, ref, reason: "scores must be 1..5" };
+  const min = Math.min(...scores);
+  if (min < VISUAL_FLOOR) return { ok: false, ref, reason: `a score of ${min} is below the floor (${VISUAL_FLOOR})` };
+  if (min < VISUAL_PASS && !/\bdebt\b/i.test(text)) {
+    return { ok: false, ref, reason: `a score of ${min} is below ${VISUAL_PASS}: fix it, or record it as "debt"` };
+  }
+  return { ok: true, ref };
+}
 
 // Walks up from `start` to the nearest directory containing design/features.json.
 export function findFeaturesFile(start) {
@@ -127,6 +153,14 @@ export function validatePlan(plan) {
       const covered = new Set(f.evidence.map((e) => e?.ac));
       const missing = [...acIds].filter((id) => !covered.has(id));
       if (missing.length) err(`${where}: done without evidence for ${missing.join(", ")}`);
+      for (const ac of Array.isArray(f.acceptance) ? f.acceptance : []) {
+        if (!ac?.verify?.includes?.("visual") || !covered.has(ac.id)) continue;
+        const entries = f.evidence.filter((e) => e?.ac === ac.id);
+        if (!entries.some((e) => parseVisualEvidence(e.result).ok)) {
+          const reason = parseVisualEvidence(entries.at(-1)?.result).reason;
+          err(`${where}: ${ac.id} is a visual check without a passing visual verdict (${reason})`);
+        }
+      }
     }
   }
 
