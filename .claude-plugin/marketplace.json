@@ -1,0 +1,14 @@
+{
+  "name": "roblox-agent-kit",
+  "owner": {
+    "name": "jmaan"
+  },
+  "description": "Roblox Agent Kit: everything Claude Code needs for Roblox development in one plugin.",
+  "plugins": [
+    {
+      "name": "roblox-agent-kit",
+      "source": "./",
+      "description": "Roblox Studio MCP + Open Cloud/docs MCP + Luau toolchain hooks and skills for Claude Code."
+    }
+  ]
+}

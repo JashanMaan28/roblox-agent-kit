@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Rokit
+        run: |
+          curl -sSf https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.sh | bash
+          echo "$HOME/.rokit/bin" >> "$GITHUB_PATH"
+      - run: rokit install --no-trust-check
+      - run: wally install
+      - name: Format, lint, type check, build
+        run: node tools/rbx-check.mjs
+
+  # Runs the ServerStorage.Tests suite inside a real Roblox server via Open Cloud.
+  # Enable by adding repo variables ROBLOX_UNIVERSE_ID + ROBLOX_TEST_PLACE_ID and secret ROBLOX_API_KEY
+  # (scopes: universe-places:write, universe.place.luau-execution-session:write). Use a separate test place.
+  cloud-tests:
+    needs: check
+    if: ${{ vars.ROBLOX_TEST_PLACE_ID != '' }}
+    runs-on: ubuntu-latest
+    env:
+      ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+      ROBLOX_UNIVERSE_ID: ${{ vars.ROBLOX_UNIVERSE_ID }}
+      ROBLOX_PLACE_ID: ${{ vars.ROBLOX_TEST_PLACE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Rokit
+        run: |
+          curl -sSf https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.sh | bash
+          echo "$HOME/.rokit/bin" >> "$GITHUB_PATH"
+      - run: rokit install --no-trust-check
+      - run: wally install
+      - run: node tools/rbx-cloud.mjs test --place "$ROBLOX_PLACE_ID"

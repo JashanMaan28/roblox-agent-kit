@@ -1,0 +1,31 @@
+{
+  "name": "roblox-agent-kit",
+  "displayName": "Roblox Agent Kit",
+  "version": "0.1.0",
+  "description": "One install that gives Claude Code the whole Roblox toolchain: Roblox Studio's built-in MCP server, an Open Cloud + docs MCP server, Luau lint/type-check hooks, Rojo/Wally/luau-lsp/selene/StyLua/Lune project scaffolding, and playbook skills.",
+  "author": {
+    "name": "jmaan"
+  },
+  "license": "MIT",
+  "keywords": ["roblox", "luau", "rojo", "roblox-studio", "mcp", "open-cloud", "gamedev"],
+  "userConfig": {
+    "roblox_api_key": {
+      "type": "string",
+      "title": "Roblox Open Cloud API key (optional)",
+      "description": "Used only by the roblox-cloud MCP tools (Luau Execution, place upload, read-only DataStores). Create at create.roblox.com/dashboard/credentials with the scopes listed in the README. Leave empty to skip cloud features.",
+      "sensitive": true
+    },
+    "universe_id": {
+      "type": "string",
+      "title": "Default universe (experience) ID (optional)",
+      "description": "Fallback universe ID for Open Cloud tools when the project has no roblox-kit.json.",
+      "default": ""
+    },
+    "place_id": {
+      "type": "string",
+      "title": "Default place ID (optional)",
+      "description": "Fallback place ID for Open Cloud tools when the project has no roblox-kit.json.",
+      "default": ""
+    }
+  }
+}

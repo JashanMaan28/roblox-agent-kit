@@ -1,0 +1,9 @@
+sourcemap.json
+roblox.yml
+build/
+Packages/
+DevPackages/
+ServerPackages/
+*.rbxl
+*.rbxlx
+.env

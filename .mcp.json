@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "roblox-studio": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/studio-mcp.mjs"]
+    },
+    "roblox-cloud": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/cloud-mcp.mjs"],
+      "env": {
+        "RAK_API_KEY": "${user_config.roblox_api_key}",
+        "RAK_UNIVERSE_ID": "${user_config.universe_id}",
+        "RAK_PLACE_ID": "${user_config.place_id}"
+      }
+    }
+  }
+}
