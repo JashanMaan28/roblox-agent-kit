@@ -16,7 +16,7 @@ You have four layers. Pick the lowest-risk one that can do the job.
 
 ## The loop
 
-1. **Orient.** Read `CLAUDE.md` and `default.project.json` to map files → instances. If Studio is open, call `list_roblox_studios` once, keep the `studio_id`, then `search_game_tree` / `inspect_instance` for what isn't on disk (maps, models, UI built in Studio). Find the current owner of the feature before adding anything. Read-only first; say what you plan to change.
+1. **Orient.** Read `AGENTS.md` and `default.project.json` to map files → instances. If Studio is open, call `list_roblox_studios` once, keep the `studio_id`, then `search_game_tree` / `inspect_instance` for what isn't on disk (maps, models, UI built in Studio). Find the current owner of the feature before adding anything. Read-only first; say what you plan to change.
 2. **Look things up.** For any API you aren't certain is current, call `docs_search` then `docs_fetch`. Check `/docs/reference/engine/deprecated.md` before using older APIs. The Studio `skill` tool serves Roblox's own guides (debugging, profiling, unit tests, receipts).
 3. **Edit.**
    - Code under a Rojo-mapped folder: edit the file on disk. Never use `multi_edit` on Rojo-managed scripts; the next sync overwrites it.

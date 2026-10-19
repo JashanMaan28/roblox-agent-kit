@@ -1,6 +1,6 @@
 ---
 name: new-project
-description: "Scaffold a new Rojo-based Roblox project wired for Claude Code: pinned toolchain, strict Luau, test runner, CLAUDE.md, CI. Use when starting a new Roblox game or converting a folder into a Rojo project."
+description: "Scaffold a new Rojo-based Roblox project wired for Claude Code: pinned toolchain, strict Luau, test runner, AGENTS.md (with a CLAUDE.md that imports it), CI. Use when starting a new Roblox game or converting a folder into a Rojo project."
 argument-hint: "<directory> [--name my-game]"
 ---
 

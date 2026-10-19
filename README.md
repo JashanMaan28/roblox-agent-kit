@@ -10,7 +10,7 @@ One Claude Code plugin that gives the agent the whole Roblox toolchain:
 | Skills | 39 skills (see below): the kit's own workflow skills plus the best community skill for each Roblox topic, fact-checked against the Creator Docs and fixed |
 | Agent | `roblox-reviewer`: read-only reviewer for Luau changes (security, networking, data, performance, style) |
 | Scripts | `rbx-new` (scaffold), `rbx-check` (StyLua, selene, luau-lsp, Rojo build), `opencloud` (CLI for CI), `refimage` (reference art via Codex CLI or image APIs, fitted to Roblox sizes) |
-| Project template | Rojo layout, Rokit-pinned rojo 7.7.1 / wally 0.3.2 / luau-lsp 1.70.1 / selene 0.32.0 / StyLua 2.6.0 / lune 0.11.0, strict `.luaurc`, dependency-free test runner, `CLAUDE.md`, `roblox-kit.json`, VS Code settings, GitHub Actions CI |
+| Project template | Rojo layout, Rokit-pinned rojo 7.7.1 / wally 0.3.2 / luau-lsp 1.70.1 / selene 0.32.0 / StyLua 2.6.0 / lune 0.11.0, strict `.luaurc`, dependency-free test runner, `AGENTS.md` (imported by `CLAUDE.md`), `roblox-kit.json`, VS Code settings, GitHub Actions CI |
 
 ## Skills
 
