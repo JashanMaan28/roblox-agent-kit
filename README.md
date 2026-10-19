@@ -33,7 +33,7 @@ Claude loads these on demand; `roblox-kit` is the entry point and has the full i
 ## Install
 
 ```sh
-claude plugin marketplace add <path-or-github-repo-of-this-folder>
+claude plugin marketplace add JashanMaan28/roblox-agent-kit
 claude plugin install roblox-agent-kit@roblox-agent-kit
 ```
 
